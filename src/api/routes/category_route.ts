@@ -37,5 +37,4 @@ export const categoryroute = (_router : Router, _categoryService: category_servi
         resp.status(200).json(respData);
     });
 
-
 }
