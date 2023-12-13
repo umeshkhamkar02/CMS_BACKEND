@@ -1,0 +1,23 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const path_1 = __importDefault(require("path"));
+const routes_1 = require("./api/routes");
+const services_1 = require("./api/services");
+const category_route_1 = require("./api/routes/category_route");
+const category_service_1 = __importDefault(require("./api/services/category_service"));
+const app = (0, express_1.default)();
+const router = express_1.default.Router();
+app.use((0, cors_1.default)());
+app.use(express_1.default.urlencoded({ extended: true }));
+app.use(express_1.default.json());
+var dir = path_1.default.join(__dirname, 'uploads');
+app.use(express_1.default.static(dir));
+app.use('/', router);
+(0, routes_1.userrouter)(router, new services_1.user_service());
+(0, category_route_1.categoryroute)(router, new category_service_1.default());
+exports.default = app;
