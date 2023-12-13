@@ -2,10 +2,11 @@ import { IEntityResponse } from "../../entity/ICommon.entity";
 import { Request, Response, NextFunction, Router } from "express";
 import product_service from "../services/product_service";
 import db from "../../db/db-connection";
+import authorize from "../../middleware/authorize";
 
 export const productroute = (_router: Router, _productService: product_service) => {
 
-    _router.post('/product/add', async (req: Request, resp: Response, next: NextFunction) => {
+    _router.post('/product/add', authorize, async (req: Request, resp: Response, next: NextFunction) => {
         let respData: IEntityResponse = {} as IEntityResponse;
         if (req.body) {
             respData = await _productService.insertProduct(req.body);
@@ -16,7 +17,7 @@ export const productroute = (_router: Router, _productService: product_service) 
         resp.status(200).json(respData);
     });
 
-    _router.get('/product/get', async (req: Request, resp: Response, next: NextFunction) => {
+    _router.get('/product/get',authorize, async (req: Request, resp: Response, next: NextFunction) => {
         let respData: IEntityResponse = {} as IEntityResponse;
         if (req.body) {
             respData = await _productService.getProduct();
@@ -27,7 +28,7 @@ export const productroute = (_router: Router, _productService: product_service) 
         resp.status(200).json(respData);
     });
 
-    _router.post('/product/update', async (req: Request, resp: Response, next: NextFunction) => {
+    _router.post('/product/update',authorize, async (req: Request, resp: Response, next: NextFunction) => {
         let respData: IEntityResponse = {} as IEntityResponse;
         if (req.body) {
             respData = await _productService.updateProduct(req.body);
@@ -38,7 +39,7 @@ export const productroute = (_router: Router, _productService: product_service) 
         resp.status(200).json(respData);
     });
 
-    _router.get('/getById/:id', async (req: Request, resp: Response, next: NextFunction) => {
+    _router.get('/getById/:id',authorize, async (req: Request, resp: Response, next: NextFunction) => {
         let respData: IEntityResponse = {} as IEntityResponse;
         if (req.body) {
             respData = await _productService.getProductById(Number(req.params.id));
@@ -49,7 +50,7 @@ export const productroute = (_router: Router, _productService: product_service) 
         resp.status(200).json(respData);
     });
 
-    _router.delete('/delete/:id',(req,res,next)=>{
+    _router.delete('/delete/:id', authorize ,(req,res,next)=>{
         const id = req.params.id;
         var query = "delete from product where id =?";
         db.query(query,[id],(err, results)=>{
@@ -65,7 +66,7 @@ export const productroute = (_router: Router, _productService: product_service) 
         })
     })
 
-    _router.patch('/updateStatus', (req,res,next)=>{
+    _router.patch('/updateStatus', authorize, (req,res,next)=>{
         let user = req.body;
         var query = "update product set status=? where id=?";
         db.query(query,[user.status, user.id],(err, results)=>{
@@ -81,7 +82,7 @@ export const productroute = (_router: Router, _productService: product_service) 
         })
     })
 
-    _router.get('/getByCategory/:id', (req, res, next)=>{
+    _router.get('/getByCategory/:id',authorize, (req, res, next)=>{
         const id = req.params.id;
         var query = "select id, name from product where categoryId=? and status='true'";
         db.query(query,[id],(err, results)=>{
