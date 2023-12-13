@@ -8,8 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userrouter = void 0;
+const authorize_1 = __importDefault(require("../../middleware/authorize"));
 const userrouter = (_router, _userService) => {
     _router.post('/auth/register', (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
         let respData = {};
@@ -19,6 +23,28 @@ const userrouter = (_router, _userService) => {
         else {
             respData.isSuccess = false;
             respData.message = "Invalid request...!";
+        }
+        resp.status(200).json(respData);
+    }));
+    _router.post('/auth/login', (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
+        let respData = {};
+        if (req.body) {
+            respData = yield _userService.loginRequest(req.body);
+        }
+        else {
+            respData.isSuccess = false;
+            respData.message = "Invalid credentials...!";
+        }
+        resp.status(200).json(respData);
+    }));
+    _router.post('/admin/getDashboard', authorize_1.default, (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
+        let respData = {};
+        if (req.headers['dbToken']) {
+            respData = yield _userService.getAdminDashboard(req.headers['dbToken'].toString());
+        }
+        else {
+            respData.isSuccess = false;
+            respData.message = "Error occured...!";
         }
         resp.status(200).json(respData);
     }));
