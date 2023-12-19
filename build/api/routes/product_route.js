@@ -14,8 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.productroute = void 0;
 const db_connection_1 = __importDefault(require("../../db/db-connection"));
+const authorize_1 = __importDefault(require("../../middleware/authorize"));
 const productroute = (_router, _productService) => {
-    _router.post('/product/add', (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
+    _router.post('/product/add', authorize_1.default, (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
         let respData = {};
         if (req.body) {
             respData = yield _productService.insertProduct(req.body);
@@ -26,7 +27,7 @@ const productroute = (_router, _productService) => {
         }
         resp.status(200).json(respData);
     }));
-    _router.get('/product/get', (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
+    _router.get('/product/get', authorize_1.default, (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
         let respData = {};
         if (req.body) {
             respData = yield _productService.getProduct();
@@ -37,7 +38,7 @@ const productroute = (_router, _productService) => {
         }
         resp.status(200).json(respData);
     }));
-    _router.post('/product/update', (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
+    _router.post('/product/update', authorize_1.default, (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
         let respData = {};
         if (req.body) {
             respData = yield _productService.updateProduct(req.body);
@@ -48,7 +49,7 @@ const productroute = (_router, _productService) => {
         }
         resp.status(200).json(respData);
     }));
-    _router.get('/getById/:id', (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
+    _router.get('/getById/:id', authorize_1.default, (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
         let respData = {};
         if (req.body) {
             respData = yield _productService.getProductById(Number(req.params.id));
@@ -59,7 +60,7 @@ const productroute = (_router, _productService) => {
         }
         resp.status(200).json(respData);
     }));
-    _router.delete('/delete/:id', (req, res, next) => {
+    _router.delete('/delete/:id', authorize_1.default, (req, res, next) => {
         const id = req.params.id;
         var query = "delete from product where id =?";
         db_connection_1.default.query(query, [id], (err, results) => {
@@ -74,7 +75,7 @@ const productroute = (_router, _productService) => {
             }
         });
     });
-    _router.patch('/updateStatus', (req, res, next) => {
+    _router.patch('/updateStatus', authorize_1.default, (req, res, next) => {
         let user = req.body;
         var query = "update product set status=? where id=?";
         db_connection_1.default.query(query, [user.status, user.id], (err, results) => {
@@ -89,7 +90,7 @@ const productroute = (_router, _productService) => {
             }
         });
     });
-    _router.get('/getByCategory/:id', (req, res, next) => {
+    _router.get('/getByCategory/:id', authorize_1.default, (req, res, next) => {
         const id = req.params.id;
         var query = "select id, name from product where categoryId=? and status='true'";
         db_connection_1.default.query(query, [id], (err, results) => {
