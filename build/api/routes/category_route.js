@@ -8,10 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.categoryroute = void 0;
+const authorize_1 = __importDefault(require("../../middleware/authorize"));
 const categoryroute = (_router, _categoryService) => {
-    _router.post('/category/add', (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
+    _router.post('/category/add', authorize_1.default, (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
         let respData = {};
         if (req.body) {
             respData = yield _categoryService.insertCategory(req.body);
@@ -22,7 +26,7 @@ const categoryroute = (_router, _categoryService) => {
         }
         resp.status(200).json(respData);
     }));
-    _router.get('/category/get', (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
+    _router.get('/category/get', authorize_1.default, (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
         let respData = {};
         if (req.body) {
             respData = yield _categoryService.getCategory();
@@ -33,7 +37,7 @@ const categoryroute = (_router, _categoryService) => {
         }
         resp.status(200).json(respData);
     }));
-    _router.post('/category/update', (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
+    _router.post('/category/update', authorize_1.default, (req, resp, next) => __awaiter(void 0, void 0, void 0, function* () {
         let respData = {};
         if (req.body) {
             respData = yield _categoryService.updateCategory(req.body);

@@ -6,11 +6,12 @@ import * as ejs from 'ejs';
 import path from "path";
 import * as pdf from 'html-pdf';
 import fs from "fs"
+import authorize from "../../middleware/authorize";
 
 
 export const billrouter = (_router: Router, _billService : bill_service) => {
 
-    _router.post("/generateReport", (req, res) => {
+    _router.post("/generateReport", authorize, (req, res) => {
         const generatedUuid = uuidv4();
         const orderDetails = req.body;
         var productDetailsReport = JSON.parse(orderDetails.productDetails);
@@ -70,7 +71,7 @@ export const billrouter = (_router: Router, _billService : bill_service) => {
         );
       });
 
-      _router.post("/getPdf", function (req, res) {
+      _router.post("/getPdf", authorize, function (req, res) {
         const orderDetails = req.body;
         const pdfPath = "./generated_pdf/" + orderDetails.uuid + ".pdf";
         if (fs.existsSync(pdfPath)) {
@@ -112,7 +113,7 @@ export const billrouter = (_router: Router, _billService : bill_service) => {
         }
       });
       
-      _router.get("/getBills", (req, res, next) => {
+      _router.get("/getBills",authorize, (req, res, next) => {
         var query = "select * from bill order by id DESC";
         db.query(query, (err, results) => {
           if (!err) {
@@ -123,7 +124,7 @@ export const billrouter = (_router: Router, _billService : bill_service) => {
         });
       });
       
-      _router.delete("/delete/:id", (req, res, next) => {
+      _router.delete("/delete/:id", authorize, (req, res, next) => {
         const id = req.params.id;
         var query = "delete from bill where id=?";
         db.query(query, [id], (err, results) => {
